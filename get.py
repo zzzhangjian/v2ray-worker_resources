@@ -34,6 +34,28 @@ def download_and_extract():
                         if '-'+i+'.' in file:
                             with open(file_path, "r") as txt_file:
                                 combined_file.write(txt_file.read())
-
-
+    # Step 4: Open combined_file_path,Print the contents of the combined file
+    # 假设 combined_file_path 已经定义为你想要读取的文件路径
+    rows = []
+    with open(combined_file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            print(line.strip())  # 使用 strip() 方法去除每行末尾的换行符
+            response = requests.get(f'http://ip-api.com/json/{line.strip()}?lang=zh-CN')
+            print(response)
+            if response.ok:
+                res = response.json()
+                print(res)
+            rows.append(f'{line.strip()},{res["country"]}-{res["regionName"]}-{res["city"]}')
+    with open(combined_file_path, 'w', encoding='utf-8') as file:
+        for line in rows:
+            file.write(line + '\n')
+    # with open(combined_file_path, "w") as combined_file:
+    #     lines = combined_file.readlines()
+    #     for line in lines:
+    #         print(line)
+    #         response = requests.get(f'http://ip-api.com/json/{line}?lang=zh-CN')
+    #         if response.code == 200:
+    #             res = response.json()
+    #             print(res)
+    
 download_and_extract()
